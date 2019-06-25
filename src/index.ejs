@@ -11,6 +11,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script><%= require("raw-loader!../static/assets/image-picker/image-picker.min.js") %></script>
   <script><%= require("raw-loader!../static/assets/juxtapose/juxtapose.js") %></script>
+  <script src="assets/d3.min.js"></script>
 </head>
 
 <body>
@@ -74,28 +75,46 @@
       <div id="style-transfer-slider" class="align-center" style="padding-top: 10px;"></div>
     </div>
   </figure>
-
   <script><%= require("raw-loader!../static/assets/rnst/js/style-transfer-slider.js") %></script>
-
-  <figure class="subgrid">
-    <figcaption style="grid-column: kicker">
-      <!-- <span class="figure-number">Figure 1:</span> -->
-      <span style="hyphens: manual;">As long as an </span>
-      <span style="background-color: #FFF1E7; padding-left: 2px; padding-right: 2px;">image para&shy;meter&shy;ization</span>
-      <span>is differ&shy;entiable, we can back&shy;propagate</span>
-      <span style="white-space: nowrap;">( <img src="diagrams/backprop-arrow.svg" style="width: unset;"/> )</span>
-      <span>through it.</span>
-    </figcaption>
-    <div class="l-body">
-      <%= require("../static/diagrams/general.svg") %>
-    </div>
-  </figure>
 
   <p>
     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
     <d-footnote>Test! Let's cite<d-cite key="gatys2015"></d-cite> someone!</d-footnote>
     More text!
   </p> 
+
+  <link rel="stylesheet" href="assets/rnst/css/artifacts.css">
+  <div class="deepdream-examples l-body-outset">
+      <figure class="example" style="margin-bottom:20px;">
+        <div class="original" data-focus="10,0.43,0.21">
+          <img src="images/zoom/vgg_texture.jpg">
+          <div class="reticle"></div>
+        </div>
+        <div class="closeup">
+          <img src="images/zoom/vgg_texture.jpg">
+        </div>
+        <figcaption>
+          Texture synthesized with VGG.<br>
+          <i>Mild artifacts.</i>
+        </figcaption>
+      </figure>
+      <figure class="example" style="margin-top:20px;">
+        <div class="original" data-focus="10,0.64,0.74">
+          <img src="images/zoom/resnet_texture.jpg">
+          <div class="reticle"></div>
+        </div>
+        <div class="closeup">
+          <img src="images/zoom/resnet_texture.jpg">
+        </div>
+        <figcaption>
+          Texture synthesized with robust ResNet.<br>
+          <i>Severe artifacts.</i>
+        </figcaption>
+      </figure>
+  </div>
+  <figcaption style="margin-top:-20px;padding-bottom:20px;">A comparison of artifacts between textures synthesized by VGG and ResNet. Interact by hovering around the images. This diagram was repurposed from <a href="https://distill.pub/2016/deconv-checkerboard/">Deconvolution and Checkerboard Artifacts</a> by Odena, et. al.</figcaption>
+
+  <script src="assets/rnst/js/artifacts.js"></script>
 
 </d-article>
 
