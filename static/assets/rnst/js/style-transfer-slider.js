@@ -14,8 +14,8 @@ function refreshSlider() {
   while (styleTransferSliderDiv.firstChild) {
       styleTransferSliderDiv.removeChild(styleTransferSliderDiv.firstChild);
   }
-  const imgPath1 = '/images/rnst/style-transfer/' + currentContent + '_' + currentStyle + '_' + currentLeft + '.jpg';
-  const imgPath2 = '/images/rnst/style-transfer/' + currentContent + '_' + currentStyle + '_robust.jpg';
+  const imgPath1 = '/images/style-transfer/' + currentContent + '_' + currentStyle + '_' + currentLeft + '.jpg';
+  const imgPath2 = '/images/style-transfer/' + currentContent + '_' + currentStyle + '_robust.jpg';
   new juxtapose.JXSlider('#style-transfer-slider',
       [
           {

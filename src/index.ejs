@@ -6,6 +6,7 @@
   <script src="https://distill.pub/template.v2.js"></script>
   <style><%= require("raw-loader!../static/style.css") %></style>
   <style><%= require("raw-loader!../static/assets/image-picker/image-picker.css") %></style>
+  <style><%= require("raw-loader!../static/assets/rnst/css/image-picker.css") %></style>
   <style><%= require("raw-loader!../static/assets/juxtapose/juxtapose.css") %></style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script><%= require("raw-loader!../static/assets/image-picker/image-picker.min.js") %></script>
@@ -54,7 +55,27 @@
     And, as long as the mapping from parameters to images is differentiable, we can still optimize alternative parameterizations with gradient descent.
   </p>
 
-  <image src="images/style-transfer/banner_content.jpg"></image>
+  <figure class="subgrid">
+    <div class="l-body">
+      <b>Content image</b>
+      <select id="content-select" class="image-picker">
+          <option data-img-src="images/thumbnails/ben.jpg" value="ben"></option>
+          <option data-img-src="images/thumbnails/dancing.jpg" value="dancing"></option>
+          <option data-img-src="images/thumbnails/tubingen.jpg" value="tubingen"></option>
+      </select>
+      <b>Style image</b>
+      <select id="style-select" class="image-picker">
+          <option data-img-src="images/thumbnails/scream.jpg" value="scream"></option>
+          <option data-img-src="images/thumbnails/starrynight.jpg" value="starry"></option>
+          <option data-img-src="images/thumbnails/woman.jpg" value="woman"></option>
+          <option data-img-src="images/thumbnails/picasso.jpg" value="picasso"></option>
+      </select>
+      <label><input id="check-compare-vgg" type="checkbox"><small>&nbsp; Compare VGG <> Robust ResNet</small></label>
+      <div id="style-transfer-slider" class="align-center" style="padding-top: 10px;"></div>
+    </div>
+  </figure>
+
+  <script><%= require("raw-loader!../static/assets/rnst/js/style-transfer-slider.js") %></script>
 
   <figure class="subgrid">
     <figcaption style="grid-column: kicker">

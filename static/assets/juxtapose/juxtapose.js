@@ -226,6 +226,7 @@
   }
 
   function getLeftPercent(slider, input) {
+    var leftPercent;
     if (typeof(input) === "string" || typeof(input) === "number") {
       leftPercent = parseInt(input, 10);
     } else {
@@ -330,7 +331,7 @@
       }
 
       leftPercent = leftPercent.toFixed(2) + "%";
-      leftPercentNum = parseFloat(leftPercent);
+      var leftPercentNum = parseFloat(leftPercent);
       rightPercent = (100 - leftPercentNum) + "%";
 
       if (leftPercentNum > 0 && leftPercentNum < 100) {
@@ -362,7 +363,7 @@
     },
 
     displayLabel: function(element, labelText) {
-      label = document.createElement("div");
+      var label = document.createElement("div");
       label.className = 'jx-label';
       label.setAttribute('tabindex', 0); //put the controller in the natural tab order of the document
 
@@ -371,7 +372,7 @@
     },
 
     displayCredits: function() {
-      credit = document.createElement("div");
+      var credit = document.createElement("div");
       credit.className = "jx-credit";
 
       text = "<em>Photo Credits:</em>";
@@ -561,7 +562,7 @@
         e = e || window.event;
         e.preventDefault();
         self.updateSlider(e, true);
-        animate = true;
+        var animate = true;
 
         this.addEventListener("mousemove", function(e) {
           e = e || window.event;
@@ -569,13 +570,15 @@
           if (animate) { self.updateSlider(e, false); }
         });
 
-        this.addEventListener('mouseup', function(e) {
+        var mouseUpFunc = function(e) {
           e = e || window.event;
           e.preventDefault();
           e.stopPropagation();
-          this.removeEventListener('mouseup', arguments.callee);
+          this.removeEventListener('mouseup', mouseUpFunc);
           animate = false;
-        });
+        }
+
+        this.addEventListener('mouseup', mouseUpFunc);
       });
 
       this.slider.addEventListener("touchstart", function(e) {
