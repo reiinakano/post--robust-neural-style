@@ -1,0 +1,84 @@
+.deepdream-examples {
+  position: relative;
+}
+.deepdream-examples::after {
+  overflow: visible;
+  content: "";
+  width: 27px;
+  height: 27px;
+  position: absolute;
+  right: -51px;
+  top: 0;
+}
+.deepdream-examples .example {
+  position: relative;
+}
+.deepdream-examples .original {
+  position: relative;
+  width: 45%;
+}
+.deepdream-examples .original:after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 70%;
+  position: absolute;
+  top: -20%;
+  z-index: 1;
+}
+.deepdream-examples .example .reticle {
+  position: absolute;
+  pointer-events: none;
+}
+.deepdream-examples .example .reticle:after {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  left: -50%;
+  top: -50%;
+  border-radius: 50%;
+  border: 1px solid white;
+  display: block;
+  content: '';
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+.deepdream-examples img {
+  display: block;
+  width: 100%;
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: optimizeSpeed;
+  image-rendering: pixelated;
+}
+.deepdream-examples .closeup img {
+  -webkit-filter: contrast(150%);
+  filter: contrast(150%);
+}
+.deepdream-examples .closeup {
+  position: absolute;
+  right: 34%;
+  top: 0;
+  width: 22.5%;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  border: 2px solid white;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.deepdream-examples figcaption {
+  position: absolute;
+  right: 0%;
+  top: 0;
+  width: 30%;
+}
+.deepdream-examples .closeup img {
+  position: absolute;
+  width: 800%;
+  max-width: none;
+}
+.deepdream-examples .closeup:after {
+  padding-top: 100%;
+  display: block;
+  content: '';
+}
