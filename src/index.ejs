@@ -203,6 +203,27 @@
     An interesting implication is that these artifacts, while problematic, seem largely distinct from the problem that adversarial robustness solves in neural style transfer.
   </p>
 
+  <h2>VGG remains a mystery</h2>
+
+  <p>
+    Although this experiment started because of an observation about a special characteristic of VGG nets, it did not provide an explanation for this phenomenon.
+    Indeed, if we are to accept the theory that adversarial robustness is the reason VGG works out of the box with neural style transfer, surely we'd find some indication in existing literature that VGG is naturally more robust than other architectures.
+  </p>
+
+  <p>
+    A few papers<d-cite key="Galloway2019BatchNI,Hendrycks2019BenchmarkingNN,Su2018IsRT"></d-cite> indeed show that VGG architectures are slightly more robust than ResNet. 
+    However, they also show that AlexNet<d-cite key="krizhevsky2012"></d-cite>, not known to work well for neural style transfer, is <i>above</i> VGG in terms of this "natural robustness".
+  </p>
+
+  <p>
+    Perhaps adversarial robustness just happens to incidentally fix or cover up the true reason non-VGG architectures fail at style transfer (or other similar algorithms 
+    <d-footnote>
+      In fact, neural style transfer is not the only pretrained classifier-based iterative image optimization technique that magically works better with adversarial robustness. In Engstrom, et. al.<d-cite key="engstrom2019learning"></d-cite>, they show that feature visualization via activation maximization<d-cite key="olah2017feature"></d-cite> works on robust classifiers <i>without</i> enforcing any priors or regularization (e.g. image transformations and decorrelated parameterization) used by previous work<d-cite key="olah2017feature,olah2018the"></d-cite>. In a recent chat with Chris Olah, he pointed out that the aforementioned feature visualization techniques actually work well on VGG <i>without</i> these priors, just like style transfer!
+    </d-footnote>
+    ) i.e. adversarial robustness is a sufficient but unnecessary condition for good style transfer. 
+    Whatever the reason, I believe that further examination of VGG is a very interesting direction for future work.
+  </p>
+
 </d-article>
 
 
