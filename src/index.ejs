@@ -71,7 +71,7 @@
   </p>
 
   <p>
-    Notice how far back VGG is compared to the other models.
+    Notice how far back VGG<d-cite key="simonyan2014very"></d-cite> is compared to the other models.
   </p>
 
   <p>
@@ -84,6 +84,43 @@
   <p>
     Before proceeding, let's quickly discuss the results obtained by Mordvintsev, et. al.<d-cite key="mordvintsev2018differentiable"></d-cite> in <a href="https://distill.pub/2018/differentiable-parameterizations/">Differentiable Image Parameterizations</a>, where they show that non-VGG architectures can be used for style transfer with a simple technique previously established in feature visualization<d-cite key="olah2017feature"></d-cite>.
     In their experiment, instead of optimizing the output image in RGB space, they optimize it in Fourier space, and run the image through a series of transformations (e.g jitter, rotation, scaling) before passing it through the neural network.
+  </p>
+
+  <p>
+    Can we reconcile this result with our hypothesis linking neural style transfer and non-robust features?
+  </p>
+
+  <p>
+    One possible theory is that all of these image transformations <i>weaken</i> or even <i>destroy</i> non-robust features.
+    Since the optimization can no longer reliably manipulate non-robust features to bring down the loss, it is forced to use robust features instead, which are presumably more resistant to the applied image transformations (a rotated and jittered flappy ear still looks like a flappy ear).
+  </p>
+
+  <h2>A quick experiment</h2>
+
+  <p>
+    Testing our hypothesis is fairly straightforward: 
+    Use an adversarially robust classifier for neural style transfer<d-cite key="gatys2015"></d-cite> and see what happens.
+  </p>
+
+  <p>
+    I compared a regularly trained (non-robust) ResNet-50 with a robustly trained ResNet-50 from Engstrom, et. al.<d-cite key="engstrom2019learning"></d-cite> on their performance on neural style transfer<d-cite key="gatys2015"></d-cite>.
+    For comparison, I performed the same algorithm with a regular VGG-19<d-cite key="simonyan2014very"></d-cite>.
+  </p>
+
+  <p>
+    To ensure a fair comparison despite the different networks having different optimal hyperparameters, I performed a small grid search for each image and manually picked the best output per network. 
+    Further details can be read in a footnote
+    <d-footnote>
+      L-BFGS<d-cite key="liu1989limited"></d-cite> was used for optimization as it showed faster convergence over Adam.
+      For ResNet-50, the style layers used were the ReLu outputs after each of the 4 residual blocks, $[relu2\_x, relu3\_x, relu4\_x, relu5\_x]$ while the content layer used was $relu4\_x$. 
+      For VGG-19, style layers $[relu1\_1,relu2\_1,relu3\_1,relu4\_1,relu5\_1]$ were used with a content layer $relu4\_2$. 
+      In VGG-19, max pooling layers were replaced with avg pooling layers, as stated in Gatys, et. al<d-cite key="gatys2015"></d-cite>.
+    </d-footnote>
+    or observed in the accompanying Colaboratory notebook.
+  </p>
+
+  <p>
+    The results of this experiment can be explored in the diagram below.
   </p>
 
   <style>
@@ -114,10 +151,17 @@
   <script><%= require("raw-loader!../static/assets/rnst/js/style-transfer-slider.js") %></script>
 
   <p>
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-    <d-footnote>Test! Let's cite<d-cite key="gatys2015"></d-cite> someone!</d-footnote>
-    More text!
+    Success! 
+    The robust ResNet shows drastic improvement over the regular ResNet. 
+    Remember, all we did was switch the ResNet's weights, the rest of the code for performing style transfer is exactly the same!
   </p> 
+
+  <p>
+    A more interesting comparison can be done between VGG-19 and the robust ResNet. 
+    At first glance, the robust ResNet's outputs seem on par with VGG-19. 
+    Looking closer, however, the ResNet's outputs seem slightly noisier and exhibit some artifacts
+    <d-footnote>This is more obvious when the output image is initialized not with the content image, but with Gaussian noise.</d-footnote>.
+  </p>
 
   <link rel="stylesheet" href="assets/rnst/css/artifacts.css">
   <div class="deepdream-examples l-body-outset">
@@ -151,6 +195,13 @@
   <figcaption style="margin-top:-20px;padding-bottom:20px;">A comparison of artifacts between textures synthesized by VGG and ResNet. Interact by hovering around the images. This diagram was repurposed from <a href="https://distill.pub/2016/deconv-checkerboard/">Deconvolution and Checkerboard Artifacts</a> by Odena, et. al.</figcaption>
 
   <script src="assets/rnst/js/artifacts.js"></script>
+
+  <p>
+    It is currently unclear exactly what causes these artifacts. 
+    One theory is that they are checkerboard artifacts<d-cite key="odena2016deconvolution"></d-cite> caused by non-divisible kernel size and stride in the convolution layers.
+    They could also be artifacts caused by the presence of max pooling layers<d-cite key="Hnaff2016GeodesicsOL"></d-cite> in ResNet. 
+    An interesting implication is that these artifacts, while problematic, seem largely distinct from the problem that adversarial robustness solves in neural style transfer.
+  </p>
 
 </d-article>
 
