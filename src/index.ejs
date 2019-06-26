@@ -82,7 +82,7 @@
   </p>
 
   <p>
-    Before proceeding, let's quickly discuss the results obtained by Mordvintsev, et. al.<d-cite key="mordvintsev2018differentiable"></d-cite> in <a href="https://distill.pub/2018/differentiable-parameterizations/">Differentiable Image Parameterizations</a>, where they show that non-VGG architectures can be used for style transfer with a simple technique previously established in feature visualization<d-cite key="olah2017feature"></d-cite>.
+    Before proceeding, let's quickly discuss the results obtained by Mordvintsev, et. al.<d-cite key="mordvintsev2018differentiable"></d-cite> in <a href="https://distill.pub/2018/differentiable-parameterizations/">Differentiable Image Parameterizations</a>, where they show that non-VGG architectures can work for style transfer by using a simple technique previously established in feature visualization<d-cite key="olah2017feature"></d-cite>.
     In their experiment, instead of optimizing the output image in RGB space, they optimize it in Fourier space, and run the image through a series of transformations (e.g jitter, rotation, scaling) before passing it through the neural network.
   </p>
 
@@ -103,7 +103,7 @@
   </p>
 
   <p>
-    I compared a regularly trained (non-robust) ResNet-50 with a robustly trained ResNet-50 from Engstrom, et. al.<d-cite key="engstrom2019learning"></d-cite> on their performance on neural style transfer<d-cite key="gatys2015"></d-cite>.
+    I evaluated a regularly trained (non-robust) ResNet-50 with a robustly trained ResNet-50 from Engstrom, et. al.<d-cite key="engstrom2019learning"></d-cite> on their performance on neural style transfer<d-cite key="gatys2015"></d-cite>.
     For comparison, I performed the same algorithm with a regular VGG-19<d-cite key="simonyan2014very"></d-cite>.
   </p>
 
@@ -201,7 +201,7 @@
     It is currently unclear exactly what causes these artifacts. 
     One theory is that they are checkerboard artifacts<d-cite key="odena2016deconvolution"></d-cite> caused by non-divisible kernel size and stride in the convolution layers.
     They could also be artifacts caused by the presence of max pooling layers<d-cite key="Hnaff2016GeodesicsOL"></d-cite> in ResNet. 
-    An interesting implication is that these artifacts, while problematic, seem largely distinct from the problem that adversarial robustness solves in neural style transfer.
+    An interesting implication is that these artifacts, while problematic, seem orthogonal to the problem that adversarial robustness solves in neural style transfer.
   </p>
 
   <h2>VGG remains a mystery</h2>
