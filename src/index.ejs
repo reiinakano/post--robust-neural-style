@@ -49,21 +49,49 @@
 <d-title></d-title>
 
 <d-article>
-    <figure id="figure-agent-adversarial" class="subgrid">
-        <figcaption style="grid-column: kicker">
-          Adversarial training of agent for reconstruction.
-        </figcaption>
-        <div class="l-body">
-          <img src="images/transferability.png">
-        </div>
-      </figure>
 
   <p>
-    Typically, we parameterize the input image as the RGB values of each pixel.
-    But that isn’t the only way to parameterize images.
-    And, as long as the mapping from parameters to images is differentiable, we can still optimize alternative parameterizations with gradient descent.
+    A figure in Ilyas, et. al.<d-cite key="ilyas2019adversarial"></d-cite> that struck me as particularly interesting 
+    was the following graph showing a correlation between adversarial transferability between architectures and their 
+    tendency to learn similar non-robust features.
+  </p>
+  
+  <figure id="figure-agent-adversarial" class="subgrid">
+    <figcaption style="grid-column: kicker">
+      Adversarial training of agent for reconstruction.
+    </figcaption>
+    <div class="l-body">
+      <img src="images/transferability.png">
+    </div>
+  </figure>
+
+  <p>
+    One way to interpret this graph is that it shows how well a particular architecture is able to capture non-robust features in an image.
+    <d-footnote>Since the non-robust features are defined by the non-robust features ResNet-50 captures, $NRF_{resnet}$, what this graph really shows is how well an architecture captures $NRF_{resnet}$.</d-footnote>
   </p>
 
+  <p>
+    Notice how far back VGG is compared to the other models.
+  </p>
+
+  <p>
+    In the unrelated field of neural style transfer<d-cite key="gatys2015"></d-cite>, VGG-based<d-cite key="simonyan2014very"></d-cite> neural networks are also quite special since non-VGG architectures are known to not work very well <d-footnote>This phenomenon is discussed at length in <a href="https://www.reddit.com/r/MachineLearning/comments/7rrrk3/d_eat_your_vggtables_or_why_does_neural_style/">this Reddit thread</a>.</d-footnote> without some sort of parameterization trick <d-cite key="mordvintsev2018differentiable"></d-cite>.
+    The above interpretation of the graph provides an alternative explanation for this phenomenon.
+    <b>Since VGG is unable to capture non-robust features as well as other architectures, the outputs for style transfer actually look more correct to humans!</b>
+    <d-footnote>To follow this argument, note that the perceptual losses used in neural style transfer are dependent on matching features learned by a separately trained image classifier. If these learned features don't make sense to humans (non-robust features), the outputs for neural style transfer won't make sense either.</d-footnote>
+  </p>
+
+  <p>
+    Before proceeding, let's quickly discuss the results obtained by Mordvintsev, et. al.<d-cite key="mordvintsev2018differentiable"></d-cite> in <a href="https://distill.pub/2018/differentiable-parameterizations/">Differentiable Image Parameterizations</a>, where they show that non-VGG architectures can be used for style transfer with a simple technique previously established in feature visualization<d-cite key="olah2017feature"></d-cite>.
+    In their experiment, instead of optimizing the output image in RGB space, they optimize it in Fourier space, and run the image through a series of transformations (e.g jitter, rotation, scaling) before passing it through the neural network.
+  </p>
+
+  <style>
+  #style-transfer-slider.juxtapose {
+    max-height: 512px;
+    max-width: 512px;
+  }
+  </style>
   <figure class="subgrid">
     <div class="l-body">
       <b>Content image</b>
