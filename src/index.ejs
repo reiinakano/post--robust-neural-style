@@ -20,7 +20,7 @@
   <script type="text/json">{
   "title": "Adversarially Robust Neural Style Transfer",
   "description": "An experiment showing adversarial robustness makes neural style transfer work on a non-VGG architecture",
-  "password": "svgs",
+  "password": "bugs",
   "authors": [
     {
       "author": "Reiichiro Nakano",
@@ -51,11 +51,84 @@
 <d-article>
 
   <p>
-    Typically, we parameterize the input image as the RGB values of each pixel.
-    But that isn’t the only way to parameterize images.
-    And, as long as the mapping from parameters to images is differentiable, we can still optimize alternative parameterizations with gradient descent.
+    A figure in Ilyas, et. al.<d-cite key="ilyas2019adversarial"></d-cite> that struck me as particularly interesting 
+    was the following graph showing a correlation between adversarial transferability between architectures and their 
+    tendency to learn similar non-robust features.
+  </p>
+  
+  <figure id="figure-agent-adversarial" class="subgrid">
+    <figcaption style="grid-column: kicker">
+      Adversarial transferability vs test accuracy of different architectures trained on ResNet-50's non-robust features.
+    </figcaption>
+    <div class="l-body">
+      <img src="images/transferability.png">
+    </div>
+  </figure>
+
+  <p>
+    One way to interpret this graph is that it shows how well a particular architecture is able to capture non-robust features in an image.
+    <d-footnote>Since the non-robust features are defined by the non-robust features ResNet-50 captures, $NRF_{resnet}$, what this graph really shows is how well an architecture captures $NRF_{resnet}$.</d-footnote>
   </p>
 
+  <p>
+    Notice how far back VGG<d-cite key="simonyan2014very"></d-cite> is compared to the other models.
+  </p>
+
+  <p>
+    In the unrelated field of neural style transfer<d-cite key="gatys2015"></d-cite>, VGG-based<d-cite key="simonyan2014very"></d-cite> neural networks are also quite special since non-VGG architectures are known to not work very well <d-footnote>This phenomenon is discussed at length in <a href="https://www.reddit.com/r/MachineLearning/comments/7rrrk3/d_eat_your_vggtables_or_why_does_neural_style/">this Reddit thread</a>.</d-footnote> without some sort of parameterization trick <d-cite key="mordvintsev2018differentiable"></d-cite>.
+    The above interpretation of the graph provides an alternative explanation for this phenomenon.
+    <b>Since VGG is unable to capture non-robust features as well as other architectures, the outputs for style transfer actually look more correct to humans!</b>
+    <d-footnote>To follow this argument, note that the perceptual losses used in neural style transfer are dependent on matching features learned by a separately trained image classifier. If these learned features don't make sense to humans (non-robust features), the outputs for neural style transfer won't make sense either.</d-footnote>
+  </p>
+
+  <p>
+    Before proceeding, let's quickly discuss the results obtained by Mordvintsev, et. al.<d-cite key="mordvintsev2018differentiable"></d-cite> in <a href="https://distill.pub/2018/differentiable-parameterizations/">Differentiable Image Parameterizations</a>, where they show that non-VGG architectures can be used for style transfer with a simple technique previously established in feature visualization<d-cite key="olah2017feature"></d-cite>.
+    In their experiment, instead of optimizing the output image in RGB space, they optimize it in Fourier space, and run the image through a series of transformations (e.g jitter, rotation, scaling) before passing it through the neural network.
+  </p>
+
+  <p>
+    Can we reconcile this result with our hypothesis linking neural style transfer and non-robust features?
+  </p>
+
+  <p>
+    One possible theory is that all of these image transformations <i>weaken</i> or even <i>destroy</i> non-robust features.
+    Since the optimization can no longer reliably manipulate non-robust features to bring down the loss, it is forced to use robust features instead, which are presumably more resistant to the applied image transformations (a rotated and jittered flappy ear still looks like a flappy ear).
+  </p>
+
+  <h2>A quick experiment</h2>
+
+  <p>
+    Testing our hypothesis is fairly straightforward: 
+    Use an adversarially robust classifier for neural style transfer<d-cite key="gatys2015"></d-cite> and see what happens.
+  </p>
+
+  <p>
+    I compared a regularly trained (non-robust) ResNet-50 with a robustly trained ResNet-50 from Engstrom, et. al.<d-cite key="engstrom2019learning"></d-cite> on their performance on neural style transfer<d-cite key="gatys2015"></d-cite>.
+    For comparison, I performed the same algorithm with a regular VGG-19<d-cite key="simonyan2014very"></d-cite>.
+  </p>
+
+  <p>
+    To ensure a fair comparison despite the different networks having different optimal hyperparameters, I performed a small grid search for each image and manually picked the best output per network. 
+    Further details can be read in a footnote
+    <d-footnote>
+      L-BFGS<d-cite key="liu1989limited"></d-cite> was used for optimization as it showed faster convergence over Adam.
+      For ResNet-50, the style layers used were the ReLu outputs after each of the 4 residual blocks, $[relu2\_x, relu3\_x, relu4\_x, relu5\_x]$ while the content layer used was $relu4\_x$. 
+      For VGG-19, style layers $[relu1\_1,relu2\_1,relu3\_1,relu4\_1,relu5\_1]$ were used with a content layer $relu4\_2$. 
+      In VGG-19, max pooling layers were replaced with avg pooling layers, as stated in Gatys, et. al<d-cite key="gatys2015"></d-cite>.
+    </d-footnote>
+    or observed in the accompanying Colaboratory notebook.
+  </p>
+
+  <p>
+    The results of this experiment can be explored in the diagram below.
+  </p>
+
+  <style>
+  #style-transfer-slider.juxtapose {
+    max-height: 512px;
+    max-width: 512px;
+  }
+  </style>
   <figure class="subgrid">
     <div class="l-body">
       <b>Content image</b>
@@ -74,14 +147,22 @@
       <label><input id="check-compare-vgg" type="checkbox"><small>&nbsp; Compare VGG <> Robust ResNet</small></label>
       <div id="style-transfer-slider" class="align-center" style="padding-top: 10px;"></div>
     </div>
+    <figcaption class="add-colab-link" style="grid-column: text; padding-top: 20px;"></figcaption>
   </figure>
   <script><%= require("raw-loader!../static/assets/rnst/js/style-transfer-slider.js") %></script>
 
   <p>
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-    <d-footnote>Test! Let's cite<d-cite key="gatys2015"></d-cite> someone!</d-footnote>
-    More text!
+    Success! 
+    The robust ResNet shows drastic improvement over the regular ResNet. 
+    Remember, all we did was switch the ResNet's weights, the rest of the code for performing style transfer is exactly the same!
   </p> 
+
+  <p>
+    A more interesting comparison can be done between VGG-19 and the robust ResNet. 
+    At first glance, the robust ResNet's outputs seem on par with VGG-19. 
+    Looking closer, however, the ResNet's outputs seem slightly noisier and exhibit some artifacts
+    <d-footnote>This is more obvious when the output image is initialized not with the content image, but with Gaussian noise.</d-footnote>.
+  </p>
 
   <link rel="stylesheet" href="assets/rnst/css/artifacts.css">
   <div class="deepdream-examples l-body-outset">
@@ -116,6 +197,34 @@
 
   <script src="assets/rnst/js/artifacts.js"></script>
 
+  <p>
+    It is currently unclear exactly what causes these artifacts. 
+    One theory is that they are checkerboard artifacts<d-cite key="odena2016deconvolution"></d-cite> caused by non-divisible kernel size and stride in the convolution layers.
+    They could also be artifacts caused by the presence of max pooling layers<d-cite key="Hnaff2016GeodesicsOL"></d-cite> in ResNet. 
+    An interesting implication is that these artifacts, while problematic, seem largely distinct from the problem that adversarial robustness solves in neural style transfer.
+  </p>
+
+  <h2>VGG remains a mystery</h2>
+
+  <p>
+    Although this experiment started because of an observation about a special characteristic of VGG nets, it did not provide an explanation for this phenomenon.
+    Indeed, if we are to accept the theory that adversarial robustness is the reason VGG works out of the box with neural style transfer, surely we'd find some indication in existing literature that VGG is naturally more robust than other architectures.
+  </p>
+
+  <p>
+    A few papers<d-cite key="Galloway2019BatchNI,Hendrycks2019BenchmarkingNN,Su2018IsRT"></d-cite> indeed show that VGG architectures are slightly more robust than ResNet. 
+    However, they also show that AlexNet<d-cite key="krizhevsky2012"></d-cite>, not known to work well for neural style transfer, is <i>above</i> VGG in terms of this "natural robustness".
+  </p>
+
+  <p>
+    Perhaps adversarial robustness just happens to incidentally fix or cover up the true reason non-VGG architectures fail at style transfer (or other similar algorithms 
+    <d-footnote>
+      In fact, neural style transfer is not the only pretrained classifier-based iterative image optimization technique that magically works better with adversarial robustness. In Engstrom, et. al.<d-cite key="engstrom2019learning"></d-cite>, they show that feature visualization via activation maximization<d-cite key="olah2017feature"></d-cite> works on robust classifiers <i>without</i> enforcing any priors or regularization (e.g. image transformations and decorrelated parameterization) used by previous work<d-cite key="olah2017feature,olah2018the"></d-cite>. In a recent chat with Chris Olah, he pointed out that the aforementioned feature visualization techniques actually work well on VGG <i>without</i> these priors, just like style transfer!
+    </d-footnote>
+    ) i.e. adversarial robustness is a sufficient but unnecessary condition for good style transfer. 
+    Whatever the reason, I believe that further examination of VGG is a very interesting direction for future work.
+  </p>
+
 </d-article>
 
 
@@ -123,22 +232,18 @@
 <d-appendix>
   <h3>Acknowledgments</h3>
   <p>
-    We are deeply grateful to...
+    The experiment in this article was built on top of Engstrom, et. al.'s<d-cite key="engstrom2019learning"></d-cite> <a href="">open-sourced code and model weights</a>. 
+    Chris Olah pointed out that feature visualization works well on VGG without priors or regularization. 
+    Andrew Ilyas pointed out literature that showed VGG networks were slightly more robust than ResNet.
   </p>
 
   <p>
-    Many of our diagrams are based on...
-  </p>
-
-  <h3>Author Contributions</h3>
-  <p>
-    <b>Research:</b> Alex developed ...
+    The diagram comparing artifacts was repurposed from Odena et. al.'s<d-cite key="odena2016deconvolution"></d-cite> <a href="https://distill.pub/2016/deconv-checkerboard/">Deconvolution and Checkerboard Artifacts</a>. 
   </p>
 
   <p>
-    <b>Writing & Diagrams:</b> The text was initially drafted by...
+    All experiments were performed on Google Colaboratory.
   </p>
-
 
   <d-footnote-list></d-footnote-list>
   <d-citation-list></d-citation-list>
