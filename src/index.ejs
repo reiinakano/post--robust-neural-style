@@ -58,7 +58,7 @@
   
   <figure id="figure-agent-adversarial" class="subgrid">
     <figcaption style="grid-column: kicker">
-      Adversarial training of agent for reconstruction.
+      Adversarial transferability vs test accuracy of different architectures trained on ResNet-50's non-robust features.
     </figcaption>
     <div class="l-body">
       <img src="images/transferability.png">
@@ -147,6 +147,7 @@
       <label><input id="check-compare-vgg" type="checkbox"><small>&nbsp; Compare VGG <> Robust ResNet</small></label>
       <div id="style-transfer-slider" class="align-center" style="padding-top: 10px;"></div>
     </div>
+    <figcaption class="add-colab-link" style="grid-column: text; padding-top: 20px;"></figcaption>
   </figure>
   <script><%= require("raw-loader!../static/assets/rnst/js/style-transfer-slider.js") %></script>
 
@@ -233,7 +234,7 @@
   <p>
     The experiment in this article was built on top of Engstrom, et. al.'s<d-cite key="engstrom2019learning"></d-cite> <a href="">open-sourced code and model weights</a>. 
     Chris Olah pointed out that feature visualization works well on VGG without priors or regularization. 
-    I initially thought VGG networks were not more "naturally robust" than other architectures until Andrew Ilyas pointed out literature that showed it was.
+    Andrew Ilyas pointed out literature that showed VGG networks were slightly more robust than ResNet.
   </p>
 
   <p>
